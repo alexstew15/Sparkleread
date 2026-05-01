@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkleRead ✨ - 1st Grade Reading Fun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Comic+Neue:wght@400;700&display=swap');
+        * { font-family: 'Fredoka', 'Comic Neue', sans-serif; }
+        .navbar { background: linear-gradient(90deg, #22c55e, #10b981); }
+        .card-hover:hover { transform: scale(1.05); }
+        .story-text { font-size: 1.55rem; line-height: 2.6rem; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 via-green-100 to-blue-100 min-h-screen">
+
+<nav class="navbar text-white sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div onclick="navigateTo('home')" class="flex items-center gap-x-3 cursor-pointer">
+            <span class="text-5xl">🦊</span>
+            <h1 class="text-4xl font-bold">SparkleRead</h1>
+        </div>
+        <div class="flex gap-x-6 text-xl">
+            <button onclick="navigateTo('home')" class="hover:bg-white/20 px-4 py-2 rounded-2xl">🏠</button>
+            <button onclick="navigateTo('stories')" class="hover:bg-white/20 px-4 py-2 rounded-2xl">📚</button>
+            <button onclick="navigateTo('games')" class="hover:bg-white/20 px-4 py-2 rounded-2xl">🎲</button>
+            <button onclick="navigateTo('phonics')" class="hover:bg-white/20 px-4 py-2 rounded-2xl">🔤</button>
+            <button onclick="navigateTo('progress')" class="hover:bg-white/20 px-4 py-2 rounded-2xl">⭐</button>
+        </div>
+    </div>
+</nav>
+
+<div id="main-content" class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- HOME -->
+    <div id="page-home">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold text-green-700">Hi 1st Grader! 🦊</h1>
+            <p class="text-3xl mt-4">Let's read and play!</p>
+            <div class="mt-12 flex flex-wrap gap-6 justify-center">
+                <button onclick="navigateTo('stories')" class="bg-white px-10 py-6 rounded-3xl text-3xl font-bold shadow-xl">📖 Stories</button>
+                <button onclick="navigateTo('games')" class="bg-white px-10 py-6 rounded-3xl text-3xl font-bold shadow-xl">🎲 Games</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STORIES -->
+    <div id="page-stories" class="hidden">
+        <h2 class="text-5xl font-bold text-center mb-8">Choose a Story</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div onclick="openStory(0)" class="bg-white rounded-3xl p-6 cursor-pointer card-hover">
+                <div class="text-8xl mb-4">🐶</div>
+                <h3 class="text-3xl font-bold">The Brave Little Puppy</h3>
+            </div>
+            <!-- Add more stories as needed -->
+        </div>
+    </div>
+
+    <!-- GAMES -->
+    <div id="page-games" class="hidden">
+        <h2 class="text-5xl font-bold text-center mb-8">Super Fun Reading Games</h2>
+        
+        <!-- Sentence Builder -->
+        <div class="mt-10 bg-white rounded-3xl p-8">
+            <h3 class="text-4xl font-bold mb-6">Build the Sentence!</h3>
+            <div id="sentence-target" class="text-3xl min-h-20 border-4 border-dashed border-purple-200 rounded-2xl p-6 text-center mb-8"></div>
+            <div id="word-bank" class="flex flex-wrap gap-4 justify-center"></div>
+            <div class="mt-10 flex gap-4 justify-center">
+                <button onclick="checkSentence()" class="bg-green-600 text-white px-10 py-4 rounded-3xl text-2xl">Check My Sentence</button>
+                <button onclick="resetSentenceGame()" class="bg-gray-300 px-10 py-4 rounded-3xl text-2xl">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Basic navigation and variables
+function navigateTo(page) {
+    document.querySelectorAll('#main-content > div').forEach(d => d.classList.add('hidden'));
+    document.getElementById('page-' + page).classList.remove('hidden');
+}
+
+// Sentence game (fixed)
+let sentenceGame = { target: "The cat is on the mat", words: ["The","cat","is","on","the","mat"] };
+let selectedWords = [];
+
+function renderSentenceGame() {
+    const bank = document.getElementById('word-bank');
+    bank.innerHTML = '';
+    sentenceGame.words.sort(() => Math.random() - 0.5).forEach(word => {
+        const el = document.createElement('div');
+        el.className = "px-6 py-4 bg-purple-100 hover:bg-purple-200 rounded-3xl text-3xl cursor-pointer";
+        el.textContent = word;
+        el.onclick = () => { selectedWords.push(word); updateSentence(); el.remove(); };
+        bank.appendChild(el);
+    });
+    selectedWords = [];
+    updateSentence();
+}
+
+function updateSentence() {
+    document.getElementById('sentence-target').innerHTML = selectedWords.join(' ') || '<span class="opacity-40">Click words to build the sentence...</span>';
+}
+
+function checkSentence() {
+    const built = selectedWords.join(' ').trim().toLowerCase().replace(/[^a-z ]/g,'');
+    const correct = sentenceGame.target.toLowerCase().replace(/[^a-z ]/g,'');
+    if (built === correct) {
+        alert("✅ Perfect! You earned a star! 🎉");
+        // Add star logic here
+    } else {
+        alert("Almost! Correct is: " + sentenceGame.target);
+    }
+    resetSentenceGame();
+}
+
+function resetSentenceGame() {
+    renderSentenceGame();
+}
+
+function celebrate() {
+    console.log("🎉 Celebration triggered!");
+}
+
+// Init
+window.onload = () => {
+    renderSentenceGame();
+    navigateTo('home');
+};
+</script>
+</body>
+</html>
